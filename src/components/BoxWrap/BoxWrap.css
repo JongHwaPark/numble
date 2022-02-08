@@ -1,0 +1,8 @@
+.box-wrap {
+  display: grid;
+  column-gap:5px;
+  row-gap:5px;
+
+  width: 500px;
+  height: 500px;
+}
