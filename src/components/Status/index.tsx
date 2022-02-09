@@ -1,17 +1,17 @@
 import React from 'react';
 import './Status.css';
 
-interface StatusProps {
-  stage: Number
-  time: Number
-  grade: Number
+export interface StatusType {
+  stage: number;
+  grade: number;
+  time: number;
 }
 
-const Status = ({
-  stage,
-  time,
-  grade,
-}: StatusProps) => { 
+interface StatusProps {
+  status: StatusType
+}
+const Status = ({ status }: StatusProps) => { 
+  const { stage, time, grade} = status;
   return (
     <div className="status">
       <ul>

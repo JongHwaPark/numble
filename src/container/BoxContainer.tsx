@@ -1,66 +1,85 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import Status from '../components/Status';
+import Status, { StatusType } from '../components/Status';
 import BoxWrap, { BoxesType } from '../components/BoxWrap';
-import { useInterval } from '../hooks';
+
+function getColorData(stage: number) {
+  function r() { return Math.floor(Math.random() * 255) };
+  const R = r();
+  const G = r();
+  const B = r();
+  let alpha = 100 - (100 / stage);
+  if(alpha < 40) alpha = 40;
+  if(alpha > 85) alpha = 85;
+
+  const baseColor = `rgba(${R}, ${G}, ${B}, ${alpha}%)`;
+  const pointColor = `rgba(${R}, ${G}, ${B}, 100%)`;
+  return {
+    baseColor,
+    pointColor,
+  }
+}
 
 function BoxContainer() {
-  const [ stage, setStage ] = useState(1);
-  const [ grade, setGrade ] = useState(0);
-  const [ time, setTime ] = useState(15);
+  let timer: ReturnType<typeof setInterval>;
+
+  const [ status, setStatus ] = useState<StatusType>({ stage: 1, grade: 0, time: 15 });
   const [ boxes, setBoxes ] = useState<BoxesType>([]);
 
   useEffect(() => {
     const newBoxes:BoxesType = [];
-    const total = Math.pow(Math.round((stage + 0.5) / 2) + 1, 2);
+    const total = Math.pow(Math.round((status.stage + 0.5) / 2) + 1, 2);
     const targetIndex = Math.floor(Math.random() * total);
+    const { baseColor, pointColor } = getColorData(status.stage);
     for(let i = 0; i < total; i++){
       newBoxes.push({
         targetIndex,
-        baseColor:'',
-        pointColor: '',
+        baseColor,
+        pointColor,
       });
     }
     setBoxes(newBoxes);
-    console.log('current stage', stage, total);
-  }, [stage]);
-  let timer: any;
+  }, [status.stage]);
+
   useEffect(() => {
     timer = setInterval(() => {
-      const nextTime = time - 1;
-      setNextTime(nextTime);
+      setStatus((status) => ({ ...status, time : status.time - 1}));
     }, 1000);
     return () => {
       clearInterval(timer);
     };
-  }, [time]);
+  }, []);
+
+  useEffect(() => {
+    if(status.time <= 0) {
+      setStatus({
+        stage: 1,
+        grade: 0,
+        time: 15,
+      });
+      clearInterval(timer);
+      window.alert(`Game Over! \nGrade : ${status.grade}`);
+    }    
+  }, [status.time]);
 
   const handleClickBox = useCallback((index: Number, targetIndex: Number) => {
     if(index === targetIndex) {
-      setStage(stage + 1);
-      setGrade(grade + 1);
-      setNextTime(15);
+      setStatus(status => ({
+        stage: status.stage +1,
+        grade: Math.pow(status.stage, 3) * status.time,
+        time: 15
+      }));
     } else {
-      const nextTime = time - 3;
-      setNextTime(nextTime);
+      setStatus(status => {
+        const nextTime = status.time - 3;
+        return { ...status, time: nextTime <= 0 ? 0 : nextTime }
+      });
     }
-  }, [stage, grade, time]);
-
-  const setNextTime = (nextTime:number) => {
-    if(nextTime <= 0) {
-      setTime(15);
-      setStage(1);
-      setGrade(0);
-      clearInterval(timer);
-      window.alert('끝났슈');
-    } else {
-      setTime(nextTime);
-    }
-  }
-
-  console.log('render container');
+  }, [status.stage, status.grade]);
   return (
     <>
-      <Status stage={stage} grade={grade} time={time}/>
+      <Status 
+        status={status}
+      />
       <BoxWrap 
         boxes={boxes}
         onClickBox={handleClickBox}

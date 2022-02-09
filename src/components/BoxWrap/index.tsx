@@ -6,12 +6,12 @@ import Box, { BoxType } from '../Box';
 export type BoxesType = BoxType[];
 interface BoxWrapProps {
   boxes: BoxesType,
-  onClickBox: any
+  onClickBox: Function,
 }
 
 const BoxWrap = ({
   boxes,
-  onClickBox
+  onClickBox,
 }: BoxWrapProps) => { 
   const colums = Math.sqrt(boxes.length);
   return (
@@ -28,16 +28,4 @@ const BoxWrap = ({
   )
 };
 
-
-
-function propsAreEqual(prev: any , next: any){
-  for(let key in prev){
-    if(prev[key] !== next[key]){
-      console.log(key, prev[key], next[key]);
-      return false;
-    }
-  }
-  return true;
-}
-
-export default React.memo(BoxWrap, propsAreEqual);
+export default React.memo(BoxWrap);

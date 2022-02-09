@@ -9,7 +9,7 @@ export interface BoxType {
 
 interface BoxProps extends BoxType {
   index: Number
-  onClickBox: any
+  onClickBox: Function
 }
 
 const Box = ({
@@ -21,9 +21,8 @@ const Box = ({
 }: BoxProps) => { 
   return (
     <div 
-      data-index={index} 
-      data-target-index={targetIndex} 
-      className={`box ${index === targetIndex && 'active'}`}
+      className={`box`}
+      style={{  backgroundColor: `${ index === targetIndex ? pointColor : baseColor }` }}
       onClick={onClickBox.bind(this, index, targetIndex)}
     />
   )

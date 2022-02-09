@@ -1,10 +1,5 @@
 .box {
   display: inline-block;
-  border: 1px solid red;
-}
-
-.box.active {
- background-color: wheat;
 }
 
 .box-100 {

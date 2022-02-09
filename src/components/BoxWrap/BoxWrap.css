@@ -1,7 +1,7 @@
 .box-wrap {
   display: grid;
-  column-gap:5px;
-  row-gap:5px;
+  column-gap:3px;
+  row-gap:3px;
 
   width: 500px;
   height: 500px;
