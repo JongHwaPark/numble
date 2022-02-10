@@ -20,7 +20,7 @@ function getColorData(stage: number) {
 }
 
 function BoxContainer() {
-  
+
   const [ status, setStatus ] = useState<StatusType>({ stage: 1, grade: 0, time: 15 });
   const [ boxes, setBoxes ] = useState<BoxesType>([]);
 
@@ -58,7 +58,7 @@ function BoxContainer() {
       });
       window.alert(`Game Over! \nGrade : ${status.grade}`);
     }    
-  }, [status.time]);
+  }, [status.time, status.grade]);
 
   const handleClickBox = useCallback((index: Number, targetIndex: Number) => {
     if(index === targetIndex) {
