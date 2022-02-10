@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Status, { StatusType } from '../components/Status';
 import BoxWrap, { BoxesType } from '../components/BoxWrap';
 
@@ -20,8 +20,7 @@ function getColorData(stage: number) {
 }
 
 function BoxContainer() {
-  let timer: ReturnType<typeof setInterval>;
-
+  
   const [ status, setStatus ] = useState<StatusType>({ stage: 1, grade: 0, time: 15 });
   const [ boxes, setBoxes ] = useState<BoxesType>([]);
 
@@ -40,12 +39,13 @@ function BoxContainer() {
     setBoxes(newBoxes);
   }, [status.stage]);
 
+  const interval = useRef<ReturnType<typeof setInterval>>();
   useEffect(() => {
-    timer = setInterval(() => {
+    interval.current = setInterval(() => {
       setStatus((status) => ({ ...status, time : status.time - 1}));
     }, 1000);
     return () => {
-      clearInterval(timer);
+      if(interval.current) clearInterval(interval.current);
     };
   }, []);
 
@@ -56,7 +56,6 @@ function BoxContainer() {
         grade: 0,
         time: 15,
       });
-      clearInterval(timer);
       window.alert(`Game Over! \nGrade : ${status.grade}`);
     }    
   }, [status.time]);
@@ -74,7 +73,7 @@ function BoxContainer() {
         return { ...status, time: nextTime <= 0 ? 0 : nextTime }
       });
     }
-  }, [status.stage, status.grade]);
+  }, []);
   return (
     <>
       <Status 
